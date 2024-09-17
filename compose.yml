@@ -1,0 +1,27 @@
+services:
+    api:
+        build: .
+        command: node index.js
+        ports:
+            - "3000:3000"
+        environment:
+            - MONGODB_URI:${MONGODB_URI?Database url not set}
+        networks:
+            - api-network
+    db:
+        image: mongo
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin 
+            MONGO_INITDB_ROOT_PASSWORD: password
+        ports:
+            - "27017:27017"
+        volumes:
+            - db_volume:/home/mongo-db
+        networks:
+            - api-network
+
+networks:
+  api-network:
+
+volumes:
+    db_volume:
