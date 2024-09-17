@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 const Aluno = require("../models/model-aluno");
 const router = express.Router();
@@ -10,16 +11,6 @@ router.get("/", async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Erro buscando alunos");
-    }
-});
-
-router.get("/:id", async (req, res) => {
-    try {
-        const aluno = await Aluno.findOne({ id: req.params.id });
-        res.send(aluno);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send(`Erro buscando aluno com id ${req.params.id}`);
     }
 });
 
@@ -37,7 +28,25 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.get("/find/:id", async (req, res) => {
+    try {
+        const aluno = await Aluno.findOne({
+            _id: new mongoose.Types.ObjectId(req.params.id),
+        });
+        if (!aluno) {
+            res.status(404).send(
+                `Aluno com id ${req.params.id} não encontrado`
+            );
+        } else {
+            res.send(aluno);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(`Erro buscando aluno com id ${req.params.id}`);
+    }
+});
+
+router.put("/find/:id", async (req, res) => {
     try {
         await Aluno.findByIdAndUpdate(req.params.id);
         res.send("Aluno atualizado com sucesso");
@@ -47,7 +56,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/find/:id", async (req, res) => {
     try {
         await Aluno.findByIdAndDelete(req.params.id);
         res.send("Aluno removido com sucesso");
