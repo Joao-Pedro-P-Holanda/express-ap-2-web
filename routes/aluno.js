@@ -48,7 +48,7 @@ router.get("/find/:id", async (req, res) => {
 
 router.put("/find/:id", async (req, res) => {
     try {
-        await Aluno.findByIdAndUpdate(req.params.id);
+        await Aluno.findByIdAndUpdate(req.params.id, req.body);
         res.send("Aluno atualizado com sucesso");
     } catch (err) {
         console.error(err);
